@@ -1,0 +1,4 @@
+python-twitter
+python-dotenv
+oauth2
+Flask
