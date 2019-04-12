@@ -1,9 +1,9 @@
 from dotenv import load_dotenv
-from pathlib import Path
+from os.path import join, dirname
 import os
 
 # load .env file
-env_path = Path('.') / '.env'
+env_path = join(dirname(__file__), '.env')
 load_dotenv(env_path)
 
 ACCESS_TOKEN = os.getenv('ACCESS_TOKEN')
