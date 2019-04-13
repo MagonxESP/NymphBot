@@ -40,7 +40,7 @@ class NymphTwitter(ApiService):
             posted_status = api.PostUpdate(status)
             self.saveStatus(posted_status.AsDict())
         except twitter.error.TwitterError as e:
-            pass
+            tweet = self.getLastTweet(status)
 
     def saveStatus(self, status):
         try:
@@ -59,20 +59,21 @@ class NymphTwitter(ApiService):
             pass
 
     def getLastTweet(self, status):
-        with open('tweets.json', 'r') as file:
-            tweets = json.loads(file.read())
+        file = open('tweets.json', 'r')
+        tweets = json.loads(file.read())
 
-        tweets.sort(key=lambda item: item['created_at'])
+        tweets.sort(key=lambda item: self.createdTimeToTimestamp(item['created_at']))
 
         tweets_same_status = []
         for tweet in tweets:
             if tweet['text'] == status:
                 tweets_same_status.append(tweet)
 
+        return tweets_same_status[0]
+
     def createdTimeToTimestamp(self, created_at):
-        # timestamp = time.strftime('%Y-%m-%d %H:%M:%S', time.strptime(created_at, '%a %b %d %H:%M:%S +0000 %Y'))
-        # datetime.datetime.fromisoformat()
-        pass
+        date = datetime.datetime.strptime(created_at, '%a %b %d %H:%M:%S +0000 %Y')
+        return date.timestamp()
 
 
 class NymphDiscord(ApiService):
