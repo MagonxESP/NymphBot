@@ -2,7 +2,7 @@ import Nymph.settings as settings
 import twitter
 import json
 import os
-import time
+import hashlib
 import datetime
 
 
@@ -35,12 +35,21 @@ class NymphTwitter(ApiService):
         )
 
     def post(self, status, options=None):
+        api = self.__api
+
         try:
-            api = self.__api
             posted_status = api.PostUpdate(status)
             self.saveStatus(posted_status.AsDict())
-        except twitter.error.TwitterError as e:
-            tweet = self.getLastTweet(status)
+        except twitter.error.TwitterError:
+            try:
+                tweet = self.getLastTweet(status)
+                api.PostRetweet(tweet['id'])
+            except twitter.error.TwitterError:
+                _hash = hashlib.md5()
+                new_status = status + ' #' + _hash.hexdigest()[:5]
+                posted_status = api.PostUpdate(new_status)
+                posted_status.text = status  # prevents save tweet with new status
+                self.saveStatus(posted_status.AsDict())
 
     def saveStatus(self, status):
         try:
@@ -62,7 +71,7 @@ class NymphTwitter(ApiService):
         file = open('tweets.json', 'r')
         tweets = json.loads(file.read())
 
-        tweets.sort(key=lambda item: self.createdTimeToTimestamp(item['created_at']))
+        tweets = sorted(tweets, key=lambda item: self.createdTimeToTimestamp(item['created_at']))
 
         tweets_same_status = []
         for tweet in tweets:
