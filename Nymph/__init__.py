@@ -1,5 +1,4 @@
 from flask import Flask
-from threading import Thread
 import Nymph.nymph
 import importlib
 
@@ -19,7 +18,3 @@ nymph_bot.addRouteCallback('post', nymph_discord.post)
 
 # load routes
 importlib.import_module('Nymph.routes')
-
-# init threads
-discord_bot_runtime = Thread(target=nymph_discord.run)
-discord_bot_runtime.run()
