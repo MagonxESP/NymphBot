@@ -5,6 +5,7 @@ import os
 import hashlib
 import datetime
 from discord.ext import commands
+import asyncio
 
 
 class Nymph:
@@ -89,17 +90,21 @@ class NymphTwitter:
 
 class NymphDiscord(commands.Bot):
 
-    __statusChannel = None
-
     def __init__(self):
-        super(NymphDiscord, self).__init__(command_prefix='!')
-        self.add_command(self.status)
+        super().__init__(command_prefix='!')
+        self.add_command(commands.Command(self.status))
+        self._status_channel_id = 0
+
+    def run(self):
+        super().run(settings.DISCORD_TOKEN)
 
     def post(self, status, options=None):
-        self.__statusChannel.send(status)
+        if self._status_channel_id != 0:
+            channel = self.get_channel(self._status_channel_id)
+            loop = asyncio.new_event_loop()
+            loop.run_until_complete(channel.send(status))
 
-    @commands.command()
     @commands.has_permissions(administrator=True)
     async def status(self, ctx):
-        self.__statusChannel = ctx
-        ctx.send('Aqui subire el estado del server OwO')
+        self._status_channel_id = ctx.message.channel.id
+        await ctx.send('Aqui subire el estado del server OwO')
