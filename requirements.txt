@@ -3,3 +3,4 @@ python-dotenv
 oauth2
 Flask
 gunicorn
+discord.py

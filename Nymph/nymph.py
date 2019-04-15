@@ -4,27 +4,29 @@ import json
 import os
 import hashlib
 import datetime
+from discord.ext import commands
 
 
 class Nymph:
 
+    __routes = []
+
     def __init__(self):
-        self.__apis = [
-            NymphTwitter()
-        ]
+        pass
+
+    def addRouteCallback(self, route, callback):
+        self.__routes.append({
+            'name': route,
+            'callback': callback
+        })
 
     def post(self, status, options=None):
-        for api in self.__apis:
-            api.post(status, options)
+        for route in self.__routes:
+            if route['name'] == 'post':
+                route['callback'](status, options)
 
 
-class ApiService:
-
-    def post(self, status, options=None):
-        raise NotImplemented
-
-
-class NymphTwitter(ApiService):
+class NymphTwitter:
 
     def __init__(self):
         self.__api = twitter.Api(
@@ -85,5 +87,19 @@ class NymphTwitter(ApiService):
         return date.timestamp()
 
 
-class NymphDiscord(ApiService):
-    pass
+class NymphDiscord(commands.Bot):
+
+    __statusChannel = None
+
+    def __init__(self):
+        super(NymphDiscord, self).__init__(command_prefix='!')
+        self.add_command(self.status)
+
+    def post(self, status, options=None):
+        self.__statusChannel.send(status)
+
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    async def status(self, ctx):
+        self.__statusChannel = ctx
+        ctx.send('Aqui subire el estado del server OwO')
