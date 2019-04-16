@@ -101,8 +101,7 @@ class NymphDiscord(commands.Bot):
     def post(self, status, options=None):
         if self._status_channel_id != 0:
             channel = self.get_channel(self._status_channel_id)
-            loop = asyncio.new_event_loop()
-            loop.run_until_complete(channel.send(status))
+            asyncio.run_coroutine_threadsafe(channel.send(status), self.loop)
 
     @commands.has_permissions(administrator=True)
     async def status(self, ctx):
