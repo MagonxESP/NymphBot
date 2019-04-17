@@ -112,7 +112,7 @@ class NymphDiscord(commands.Bot):
     async def status(self, ctx):
         channel_id = ctx.message.channel.id
 
-        if self._status_channels.count(channel_id) > 0:
+        if self._status_channels.count(channel_id) == 0:
             self._status_channels.append(channel_id)
             self._storage.set('status_channels', self._status_channels)
             await ctx.send('Aqui subire el estado del server OwO')
