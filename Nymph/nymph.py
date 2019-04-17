@@ -111,6 +111,10 @@ class NymphDiscord(commands.Bot):
     @commands.has_permissions(administrator=True)
     async def status(self, ctx):
         channel_id = ctx.message.channel.id
-        self._status_channels.append(channel_id)
-        self._storage.set('status_channels', self._status_channels)
-        await ctx.send('Aqui subire el estado del server OwO')
+
+        if self._status_channels.count(channel_id) > 0:
+            self._status_channels.append(channel_id)
+            self._storage.set('status_channels', self._status_channels)
+            await ctx.send('Aqui subire el estado del server OwO')
+        else:
+            await ctx.send('Ya estoy usando este canal')
