@@ -48,7 +48,7 @@ class NymphTwitter:
                 tweet = self.getLastTweet(status)
                 api.PostRetweet(tweet['id'])
             except twitter.error.TwitterError:
-                _hash = hashlib.md5()
+                _hash = hashlib.md5(str(datetime.datetime.now().timestamp()).encode())
                 new_status = status + ' #' + _hash.hexdigest()[:5]
                 posted_status = api.PostUpdate(new_status)
                 posted_status.text = status  # prevents save tweet with new status
