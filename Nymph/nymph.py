@@ -6,6 +6,7 @@ import hashlib
 import datetime
 from discord.ext import commands
 import asyncio
+from Nymph.storage import Storage
 
 
 class Nymph:
@@ -93,17 +94,23 @@ class NymphDiscord(commands.Bot):
     def __init__(self):
         super().__init__(command_prefix='!')
         self.add_command(commands.Command(self.status))
-        self._status_channel_id = 0
+        self._storage = Storage('discord')
+        self._status_channels = self._storage.get('status_channels')
+
+        if self._status_channels is None:
+            self._status_channels = []
 
     def run(self):
         super().run(settings.DISCORD_TOKEN)
 
     def post(self, status, options=None):
-        if self._status_channel_id != 0:
-            channel = self.get_channel(self._status_channel_id)
+        for channel_id in self._status_channels:
+            channel = self.get_channel(channel_id)
             asyncio.run_coroutine_threadsafe(channel.send(status), self.loop)
 
     @commands.has_permissions(administrator=True)
     async def status(self, ctx):
-        self._status_channel_id = ctx.message.channel.id
+        channel_id = ctx.message.channel.id
+        self._status_channels.append(channel_id)
+        self._storage.set('status_channels', self._status_channels)
         await ctx.send('Aqui subire el estado del server OwO')
