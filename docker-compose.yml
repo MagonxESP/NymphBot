@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  nymph:
+    build: .
+    restart: always
+    ports:
+       - 5000:5000
+#    depends_on:
+#      - mysql
+#    links:
+#      - mysql
+#    networks:
+#      - default
+
+#  mysql:
+#    image: mysql/mysql-server:5.7
+#    restart: always
+#    environment:
+#      MYSQL_DATABASE: 'nymph'
+#      MYSQL_USER: 'root'
+#      MYSQL_PASSWORD: 'root'
+#      MYSQL_ROOT_PASSWORD: 'root'
+#    networks:
+#      - default
+
+#networks:
+#  default:
