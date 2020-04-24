@@ -1,9 +1,9 @@
-from flask import Flask
+from quart import Quart
 import Nymph.nymph
 import importlib
 
 
-app = Flask(__name__)
+app = Quart(__name__)
 
 # main bot instance
 nymph_bot = Nymph.nymph.Nymph()

@@ -1,6 +1,6 @@
 python-twitter
 python-dotenv
 oauth2
-Flask
 gunicorn
 discord.py
+quart
