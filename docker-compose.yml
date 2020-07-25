@@ -7,7 +7,7 @@ services:
     ports:
        - 5000:5000
     volumes:
-      ./data:/app/data
+      - ./data:/app/data
 #    depends_on:
 #      - mysql
 #    links:
