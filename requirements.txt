@@ -1,6 +1,7 @@
 python-twitter
-python-dotenv
+python-dotenv==0.14.0
 oauth2
 gunicorn
-discord.py
+discord.py==1.3.4
 quart
+pony
